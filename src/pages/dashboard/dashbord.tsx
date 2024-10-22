@@ -9,10 +9,10 @@ export const Dashboard = () => {
       titulo='Página inicial'
       barradeferramentas={(
         <FerramentasDeDetalhe 
-        mostrarbotaoSalvareVoltar
-         mostrarbotaoNovo
-         mostrarbotaoSalvareVoltarCarregando
-         mostrarbotaoVoltar = {false} 
+        mostrarBotaoSalvarEFechar
+         mostrarBotaoNovo
+         mostrarBotaoSalvarEFecharCarregando
+         mostrarBotaoVoltar = {false} 
          />
       )}
     >

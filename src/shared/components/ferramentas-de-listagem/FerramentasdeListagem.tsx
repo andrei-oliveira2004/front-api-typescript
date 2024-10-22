@@ -1,29 +1,30 @@
-import { Box, Button, Paper, TextField, useTheme, InputAdornment, Icon } from "@mui/material";
-import { Environment } from "../../environments";
+import { Box, Button, Icon, Paper, TextField, useTheme } from '@mui/material';
 
-interface IFerramentasdeListagemProps {
-  textobusca?: string;
-  mostrarinputbusca?: boolean;
-  onBusca?: (novotexto: string) => void;
-  textobotao?: string;
-  mostrarbotaonovo?: boolean;
-  aoClicar?: () => void;
+import { Environment } from '../../environments';
+
+
+interface IFerramentasDaListagemProps {
+  textoDaBusca?: string;
+  mostrarInputBusca?: boolean;
+  aoMudarTextoDeBusca?: (novoTexto: string) => void;
+  textoBotaoNovo?: string;
+  mostrarBotaoNovo?: boolean;
+  aoClicarEmNovo?: () => void;
 }
-
-export const FerramentasdeListagem: React.FC<IFerramentasdeListagemProps> = ({
-  textobusca = '',
-  mostrarinputbusca = false,
-  onBusca,
-  textobotao = 'Novo',
-  mostrarbotaonovo = true,
-  aoClicar,
+export const FerramentasDaListagem: React.FC<IFerramentasDaListagemProps> = ({
+  textoDaBusca = '',
+  aoMudarTextoDeBusca,
+  mostrarInputBusca = false,
+  aoClicarEmNovo,
+  textoBotaoNovo = 'Novo',
+  mostrarBotaoNovo = true,
 }) => {
   const theme = useTheme();
 
   return (
     <Box
       gap={1}
-      marginX={0} 
+      marginX={1}
       padding={1}
       paddingX={2}
       display="flex"
@@ -31,34 +32,24 @@ export const FerramentasdeListagem: React.FC<IFerramentasdeListagemProps> = ({
       height={theme.spacing(5)}
       component={Paper}
     >
-      {mostrarinputbusca && (
+      {mostrarInputBusca && (
         <TextField
           size="small"
-          value={textobusca}
-          onChange={(e) => onBusca?.(e.target.value)}
-          placeholder= {Environment.INPUT_DE_BUSCA}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Icon>search</Icon>
-              </InputAdornment>
-            ),
-          }}
-          sx={{ flexGrow: 1, maxWidth: '70%' }} 
+          value={textoDaBusca}
+          placeholder={Environment.INPUT_DE_BUSCA}
+          onChange={(e) => aoMudarTextoDeBusca?.(e.target.value)}
         />
       )}
-      
-      <Box flex={1} display="flex" justifyContent="flex-end">
-        {mostrarbotaonovo && (
+
+      <Box flex={1} display="flex" justifyContent="end">
+        {mostrarBotaoNovo && (
           <Button
-            variant="contained"
-            color="primary"
+            color='primary'
             disableElevation
-            onClick={aoClicar}
+            variant='contained'
+            onClick={aoClicarEmNovo}
             endIcon={<Icon>add</Icon>}
-          >
-            {textobotao}
-          </Button>
+          >{textoBotaoNovo}</Button>
         )}
       </Box>
     </Box>
