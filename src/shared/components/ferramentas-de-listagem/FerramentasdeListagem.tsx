@@ -5,7 +5,7 @@ import { Environment } from '../../environments';
 
 interface IFerramentasDaListagemProps {
   textoDaBusca?: string;
-  mostrarInputBusca?: boolean;
+  mostrarInputBusca: boolean;
   aoMudarTextoDeBusca?: (novoTexto: string) => void;
   textoBotaoNovo?: string;
   mostrarBotaoNovo?: boolean;
