@@ -4,14 +4,14 @@ import { Api } from "../axios.config";
 
 export interface IListagempessoa {
   id: number;
-  nomecompleto: string;
+  nomeCompleto: string;
   email: string;
   CidadeId: number;
 }
 
 export interface IDetalhepessoa {
   id: number;
-  nomecompleto: string;
+  nomeCompleto: string;
   email: string;
   CidadeId: number;
 }
@@ -26,8 +26,10 @@ const getAll = async (
   filter = ""
 ): Promise<IpessoascomTotalCount | Error> => {
   try {
-    const URL_Relative = `/pessoas?_page=${page}&_limit=${Environment.LIMITE_DE_LINHAS}&nomecompleto_like=${filter}`;
+    const URL_Relative = `/pessoas?_page=${page}&_limit=${Environment.LIMITE_DE_LINHAS}&nomeCompleto_like=${filter}`;
+    console.log('URL utilizada para busca:', URL_Relative);
     const { data, headers } = await Api.get(URL_Relative);
+    console.log('Dados retornados da API:', data); 
     if (data) {
       return {
         data,
@@ -40,6 +42,7 @@ const getAll = async (
     return new Error((error as { message: string }).message || "Erro ao listar os registros.");
   }
 };
+
 
 const getById = async (id: number): Promise<IDetalhepessoa | Error> => {
   try {
