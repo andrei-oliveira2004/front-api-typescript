@@ -83,6 +83,7 @@ export const ListagemDePessoas: React.FC = () => {
           mostrarInputBusca
           textoBotaoNovo="Nova"
           textoDaBusca={busca}
+          aoClicarEmNovo={()=>navigate('/pessoas/detalhe/nova')}
           aoMudarTextoDeBusca={(texto) => setSearchParams({ busca: texto, pagina: '1' }, { replace: true })}
         />
       }
@@ -141,15 +142,19 @@ export const ListagemDePessoas: React.FC = () => {
 
       <Snackbar
         open={snackbarOpen}
+        autoHideDuration={6000}
         onClose={handleSnackbarClose}
-        message="Tem certeza que deseja deletar este registro?"
+        message="Deseja realmente excluir este registro?"
         action={
           <>
-            <Button color="inherit" onClick={confirmDelete}>Confirmar</Button>
-            <Button color="inherit" onClick={handleSnackbarClose}>Cancelar</Button>
+            <Button color="secondary" size="small" onClick={confirmDelete}>
+              Confirmar
+            </Button>
+            <Button color="primary" size="small" onClick={handleSnackbarClose}>
+              Cancelar
+            </Button>
           </>
         }
-        autoHideDuration={6000}
       />
     </LayoutBasePagina>
   );

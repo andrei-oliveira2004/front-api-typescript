@@ -1,12 +1,6 @@
 {
   "pessoas": [
     {
-      "id": 2,
-      "email": "tucabt2@gmail.com",
-      "cidadeId": "5",
-      "nomeCompleto": "Juca Lucas"
-    },
-    {
       "id": 3,
       "email": "tucalc@gmail.com",
       "cidadeId": "20",
