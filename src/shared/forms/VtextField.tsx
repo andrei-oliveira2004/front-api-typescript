@@ -1,38 +1,26 @@
-import { useEffect, useState } from 'react';
+import React from 'react';
+import { Controller, Control } from 'react-hook-form';
 import { TextField, TextFieldProps } from '@mui/material';
-import { useField } from '@unform/core';
 
-
-type TVTextFieldProps = TextFieldProps & {
-  name: string;
+interface VTextFieldProps extends Omit<TextFieldProps, 'name'> {
+  name: string;  
+  control: Control<any>;  
 }
-export const VTextField: React.FC<TVTextFieldProps> = ({ name, ...rest }) => {
-  const { fieldName, registerField, defaultValue, error, clearError } = useField(name);
 
-  const [value, setValue] = useState(defaultValue || '');
-
-
-  useEffect(() => {
-    registerField({
-      name: fieldName,
-      getValue: () => value,
-      setValue: (_, newValue) => setValue(newValue),
-    });
-  }, [registerField, fieldName, value]);
-
-
+const VTextField: React.FC<VTextFieldProps> = ({ name, control, ...props }) => {
   return (
-    <TextField
-      {...rest}
-
-      error={!!error}
-      helperText={error}
-      defaultValue={defaultValue}
-
-      value={value}
-      onChange={e => setValue(e.target.value)}
-
-      onKeyDown={() => error ? clearError() : undefined}
+    <Controller
+      name={name}
+      control={control}
+      render={({ field }) => (
+        <TextField
+          {...field}
+          {...props}
+          onChange={(e) => field.onChange(e)}
+        />
+      )}
     />
   );
 };
+
+export default VTextField;
