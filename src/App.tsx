@@ -1,5 +1,6 @@
 
 import { BrowserRouter } from "react-router-dom";
+import "./shared/forms/Tradutions"
 
 import { AppRoutes } from './routes';
 import { AppThemeProvider, DrawerProvider } from "./shared/contexts";

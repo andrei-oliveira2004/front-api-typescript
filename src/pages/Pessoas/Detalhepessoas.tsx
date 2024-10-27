@@ -6,12 +6,22 @@ import { LayoutBasePagina } from '../../shared/layout';
 import { Snackbar, Button, Box, Paper, Grid, Typography, LinearProgress } from "@mui/material";
 import { useForm } from 'react-hook-form';
 import VTextField from '../../shared/forms/VtextField'
+import * as yup from "yup"
+;
+import { IVformErrors } from '../../shared/forms';
 
 interface IFormData {
   nomeCompleto: string;
   email: string;
   CidadeId: number;
 }
+
+const FormValidationSchema : yup.Schema<IFormData> = yup.object().shape({
+  nomeCompleto: yup.string().required().min(3),
+  email: yup.string().required('Formato Inválido no campo ').email(),
+  CidadeId: yup.number().required().typeError("O campo Cidade é obrigatório"),
+
+})
 
 export const Detalhepessoas: React.FC = () => {
   const { id = 'nova' } = useParams<'id'>();
@@ -39,24 +49,45 @@ export const Detalhepessoas: React.FC = () => {
     }
   }, [id]);
 
+
   const handleSave = async (dados: IFormData, isSaveAndClose: boolean) => {
-    setIsLoading(true);
-    const saveAction = id === 'nova' ? Pessoaservice.create(dados) : Pessoaservice.updateById(Number(id), { id: Number(id), ...dados });
-
-    saveAction
-      .then((result) => {
-        if (result instanceof Error) {
-          alert(result.message);
-        } else {
-          alert('Registro salvo com sucesso!');
-
-          if (isSaveAndClose) {
-            navigate('/pessoas');
-          }
+    setIsLoading(true); 
+  
+    try {
+    
+      await FormValidationSchema.validate(dados, { abortEarly: false });
+  
+      const saveAction = id === 'nova' 
+        ? Pessoaservice.create(dados) 
+        : Pessoaservice.updateById(Number(id), { id: Number(id), ...dados });
+  
+      const result = await saveAction;
+  
+      if (result instanceof Error) {
+        alert(result.message);
+      } else {
+        alert('Registro salvo com sucesso!');
+        if (isSaveAndClose) {
+          navigate('/pessoas');
         }
-      })
-      .finally(() => setIsLoading(false));
+      }
+    } catch (errors) {
+      if (errors instanceof yup.ValidationError) {
+        const validationErrors: IVformErrors = {}
+        errors.inner.forEach((error) => {
+          if (!error.path) return;
+          validationErrors[error.path] = error.message; 
+        });
+  
+        alert(Object.values(validationErrors).join('\n'));
+      } else {
+        alert('Ocorreu um erro ao salvar o registro.');
+      }
+    } finally {
+      setIsLoading(false); 
+    }
   };
+  
 
   const handleDelete = (id: number) => {
     setIdToDelete(id);
@@ -93,8 +124,8 @@ export const Detalhepessoas: React.FC = () => {
         <FerramentasDeDetalhe
           textoBotaoNovo='Nova'
           mostrarBotaoSalvarEFechar
-          mostrarBotaoNovo={id !== 'nova'}
-          mostrarBotaoApagar={id !== 'nova'}
+          mostrarBotaoNovo={id === 'nova' ? false:false}
+          mostrarBotaoApagar={id !== 'nova'} 
           aoClicarEmVoltar={() => navigate('/pessoas')}
           aoClicarEmApagar={() => handleDelete(Number(id))}
           aoClicarEmSalvar={() => handleSubmit((data) => handleSave(data, false))()} 
@@ -103,6 +134,7 @@ export const Detalhepessoas: React.FC = () => {
         />
       }
     >
+  
       <Box margin={1} display="flex" flexDirection="column" component={Paper} variant="outlined" padding={2}>
         <form onSubmit={handleSubmit((data) => handleSave(data, false))}>
           <Grid container direction="column" padding={2} spacing={2}>
