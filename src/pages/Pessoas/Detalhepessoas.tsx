@@ -5,7 +5,7 @@ import { FerramentasDeDetalhe } from '../../shared/components';
 import { LayoutBasePagina } from '../../shared/layout';
 import { Snackbar, Button, Box, Paper, Grid, Typography, LinearProgress } from "@mui/material";
 import { useForm } from 'react-hook-form';
-import VTextField from '../../shared/forms/VtextField';
+import VTextField from '../../shared/forms/VtextField'
 
 interface IFormData {
   nomeCompleto: string;
@@ -37,9 +37,9 @@ export const Detalhepessoas: React.FC = () => {
         })
         .finally(() => setIsLoading(false));
     }
-  }, [id, setValue, navigate]);
+  }, [id]);
 
-  const handleSave = async (dados: IFormData) => {
+  const handleSave = async (dados: IFormData, isSaveAndClose: boolean) => {
     setIsLoading(true);
     const saveAction = id === 'nova' ? Pessoaservice.create(dados) : Pessoaservice.updateById(Number(id), { id: Number(id), ...dados });
 
@@ -49,7 +49,10 @@ export const Detalhepessoas: React.FC = () => {
           alert(result.message);
         } else {
           alert('Registro salvo com sucesso!');
-          navigate(`/pessoas/detalhe/${result}`);
+
+          if (isSaveAndClose) {
+            navigate('/pessoas');
+          }
         }
       })
       .finally(() => setIsLoading(false));
@@ -94,14 +97,14 @@ export const Detalhepessoas: React.FC = () => {
           mostrarBotaoApagar={id !== 'nova'}
           aoClicarEmVoltar={() => navigate('/pessoas')}
           aoClicarEmApagar={() => handleDelete(Number(id))}
-          aoClicarEmSalvar={() => handleSubmit(handleSave)()}
+          aoClicarEmSalvar={() => handleSubmit((data) => handleSave(data, false))()} 
           aoClicarEmNovo={() => navigate('/pessoas/detalhe/nova')}
-          aoClicarEmSalvarEFechar={() => handleSubmit(handleSave)()}
+          aoClicarEmSalvarEFechar={() => handleSubmit((data) => handleSave(data, true))()} 
         />
       }
     >
       <Box margin={1} display="flex" flexDirection="column" component={Paper} variant="outlined" padding={2}>
-        <form onSubmit={handleSubmit(handleSave)}>
+        <form onSubmit={handleSubmit((data) => handleSave(data, false))}>
           <Grid container direction="column" padding={2} spacing={2}>
 
             {isLoading && (
@@ -153,8 +156,6 @@ export const Detalhepessoas: React.FC = () => {
               </Grid>
             </Grid>
           </Grid>
-
-
         </form>
       </Box>
       
